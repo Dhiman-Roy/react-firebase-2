@@ -1,0 +1,27 @@
+.listContainer {
+    padding: 1rem;
+    background-color: rgba(29, 28, 27, 0.362);
+   display: flex;
+   flex-wrap: wrap;
+   gap: 1rem;
+   justify-content: flex-start;
+    
+    flex-grow: 1;
+}
+
+.list{
+    display: flex;
+    padding: .5rem;
+    gap: 1rem;
+    background-color: cadetblue;
+    width: 20rem;
+    height: auto;
+}
+.image{
+    width: 100%;
+    height: 100%;
+}
+.imageContainer{
+    width: 10rem;
+    height: 10rem;
+}

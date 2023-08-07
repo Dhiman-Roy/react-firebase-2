@@ -1,0 +1,21 @@
+.formContainer{
+    
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 0 1rem;
+
+    
+    
+}
+.form {
+    
+    
+    background-color: cadetblue;
+    padding: 1rem;
+
+}
+.textArea{
+    height: 10rem;
+    padding: 0;
+}
