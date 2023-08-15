@@ -9,44 +9,76 @@ import {ref, uploadBytes, getDownloadURL} from 'firebase/storage';
 const Form  = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [price, setPrice] = useState();
+    const [price, setPrice] = useState("");
     const [picture, setPicture] = useState(null);
+    const [uploadComplete, setUploadComplete] = useState(false);
+    const [productPhoto, setProductPhoto] = useState('');
+    
     const imageRef = useRef();
     
 
-    let photo = "";
+    
+    let buttonDisable = true;
     const productCollectionRef = collection(db,"products");
-    const uploadFile = async () => {
+    const uploadFile =  async() => {
+        
+       
         
         const imageRef =await ref(storage,`images/${picture.name + v4()}`);
         
         const upload = await uploadBytes(imageRef,picture);
-        const downloadURL = (await getDownloadURL(upload.ref)).toString();
+        console.log(upload)
+        const downloadURL = await getDownloadURL(upload.ref);
+
+         setProductPhoto(downloadURL);
         
-         photo = downloadURL;
-         await console.log(photo)
+         setUploadComplete(true);
+            
+        
+        
          
 
          
         
     }
+   
+    const imageChangeHandler = (event) => {
+          setPicture(event.target.files[0]);
+         
+         
+    }
+    
+
+    const imageUploadHandler =async () => {
+        
+        await uploadFile();
+     
+    
+    }
+    if(title && description && price && uploadComplete){
+        
+       buttonDisable = false;
+       
+    }
+    
+   
     
 
     const submitHandler = async (event) => {
         //event.preventDefault();
         if(picture == null) return;
-        await uploadFile();
+         
         try{
             
             await addDoc(productCollectionRef, {
                 title,
                 description,
                 price,
-               photoURL: photo,
+               photoURL: productPhoto,
             })
             setDescription("");
             setTitle("");
-            setPrice();
+            setPrice("");
             imageRef.current.value = "";
 
         }catch (err) {
@@ -76,20 +108,24 @@ const Form  = () => {
                         <label htmlFor="price">Price</label>
                     </div>
                     <div>
-                        <input id="price" type="number" value={price} onChange={ (e) => setPrice(Number(e.target.value))}></input>
+                        <input id="price" type="number" pattern="[0-9]*" value={price} onChange={ (e) => setPrice(e.target.value)}></input>
                     </div>
                     <div>
                         <label htmlFor="image">Image</label>
                     </div>
                     <div>
-                        <input id="image" type="file" alt='product image' ref={imageRef}  onChange={ (e) => setPicture(e.target.files[0])}></input>
+                        <input id="image" type="file" alt='product image' ref={imageRef}  onChange={imageChangeHandler}></input>
+                        <button onClick={imageUploadHandler}>upload image</button>
+                        <span>
+                            {uploadComplete && <p>image upload done</p>}
+                        </span>
                     </div>
                     <div>
-                        <button onClick={submitHandler}>Submit</button>
+                        <button disabled={buttonDisable} onClick={submitHandler}>Submit</button>
                     </div>
                 
             </div>
         </div>
-    )
-}
- export default Form;
+    )}
+        
+  export default Form;
